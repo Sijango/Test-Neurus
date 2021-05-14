@@ -70,9 +70,9 @@ def get_data(path_train_jpg, path_train_txt):
     txt_xmax = get_txt_index(path_train_txt, 3)
     txt_ymax = get_txt_index(path_train_txt, 4)
 
-    Y = np.concatenate([txt], axis=1)
+    # Y = np.concatenate([txt], axis=1)
 
-    x_train, x_test, _, _ = train_test_split(images, Y, test_size=0.1)
+    x_train, x_test, _, _ = train_test_split(images, txt, test_size=0.1)
 
     _, _, y_train_class, y_test_class = train_test_split(images, txt_class, test_size=0.1)
     _, _, y_train_xmin, y_test_xmin = train_test_split(images, txt_xmin, test_size=0.1)

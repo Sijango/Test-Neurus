@@ -7,8 +7,8 @@ from clear.data import get_data
 from clear.model import create_model
 
 if __name__ == '__main__':
-    path_train_jpg = 'cats_dogs_dataset/train/*.jpg'
-    path_train_txt = 'cats_dogs_dataset/train/*.txt'
+    path_train_jpg = '../cats_dogs_dataset/train/*.jpg'
+    path_train_txt = '../cats_dogs_dataset/train/*.txt'
 
     x_train, y_train, x_test, y_test = get_data(path_train_jpg)
 
