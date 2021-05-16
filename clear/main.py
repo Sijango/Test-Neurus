@@ -42,7 +42,7 @@ if __name__ == '__main__':
         model.save('model.h5')
 
     loss, class_loss, out_loss, test_acc, iou = model.evaluate(x_test, y_test, verbose=2)
-    print('\nTest accuracy: ', test_acc, ' iou: ', iou)
+    print('\nmIoU {:.2f}%, classification accuracy {:.2f}%, {} train, {} valid.'.format(iou*100, test_acc*100, len(x_train), len(x_valid)))
 
     predictions = model.predict(x_test)
 
