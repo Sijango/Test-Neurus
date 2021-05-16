@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 import glob
 from PIL import Image
@@ -44,6 +46,20 @@ def get_txt_index(path, index):
         with open(txt_file, 'r', encoding='utf-8') as f:
             tmp = f.readline().split(' ')
             tmp = int(tmp[index])
+
+            if tmp == 2 and index == 0:
+                tmp = 0
+            elif index != 0:
+                tmp = tmp / 220
+            # elif index == 1 and index == 3:
+            #     img = Image.open(os.path.splitext(txt_file)[0]+'.jpg')
+            #     w, _ = img.size
+            #     tmp = tmp / w
+            # elif index == 2 and index == 4:
+            #     img = Image.open(os.path.splitext(txt_file)[0] + '.jpg')
+            #     _, h = img.size
+            #     tmp = tmp / h
+
             txt_data.append(tmp)
 
     return txt_data
@@ -60,13 +76,18 @@ def get_image_data(path):
 
 
 if __name__ == '__main__':
-    images_data = []
+    txt_path = glob.glob('../cats_dogs_dataset/train/*.txt')
 
-    images = get_images('cats_dogs_dataset/train/*.jpg')
-    for img in images:
-        images_data.append(img)
-
-    print(len(images_data))
+    for txt_file in txt_path:
+        name = os.path.basename(txt_file)
+        print(os.path.splitext(name)[0])
+    # images_data = []
+    #
+    # images = get_images('cats_dogs_dataset/train/*.jpg')
+    # for img in images:
+    #     images_data.append(img)
+    #
+    # print(len(images_data))
 
     # path = 'data/image_data.txt'
     # save_data_img(path, images)

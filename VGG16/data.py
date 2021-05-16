@@ -54,19 +54,13 @@ def get_txt_index(path, index):
         with open(txt_file, 'r', encoding='utf-8') as f:
             tmp = f.readline().split(' ')
             tmp = int(tmp[index])
-
-            if tmp == 2 and index == 0:
-                tmp = 0
-            elif index != 0:
-                tmp = tmp / 220
-
             txt_data.append(tmp)
 
     return txt_data
 
 
 # Получение всех данных
-def get_data(path_train_jpg, path_train_txt, path_valid_jpg, path_valid_txt):
+def get_data(path_train_jpg, path_train_txt):
     images = get_image_data(path_train_jpg)
     txt = get_txt(path_train_txt)
 
@@ -76,6 +70,8 @@ def get_data(path_train_jpg, path_train_txt, path_valid_jpg, path_valid_txt):
     txt_xmax = get_txt_index(path_train_txt, 3)
     txt_ymax = get_txt_index(path_train_txt, 4)
 
+    # Y = np.concatenate([txt], axis=1)
+
     x_train, x_test, _, _ = train_test_split(images, txt, test_size=0.1)
 
     _, _, y_train_class, y_test_class = train_test_split(images, txt_class, test_size=0.1)
@@ -83,13 +79,6 @@ def get_data(path_train_jpg, path_train_txt, path_valid_jpg, path_valid_txt):
     _, _, y_train_ymin, y_test_ymin = train_test_split(images, txt_ymin, test_size=0.1)
     _, _, y_train_xmax, y_test_xmax = train_test_split(images, txt_xmax, test_size=0.1)
     _, _, y_train_ymax, y_test_ymax = train_test_split(images, txt_ymax, test_size=0.1)
-
-    images_valid = get_image_data('cats_dogs_dataset/valid/*.jpg')
-    txt_class_valid = get_txt_index('cats_dogs_dataset/valid/*.txt', 0)
-    txt_xmin_valid = get_txt_index('cats_dogs_dataset/valid/*.txt', 1)
-    txt_ymin_valid = get_txt_index('cats_dogs_dataset/valid/*.txt', 2)
-    txt_xmax_valid = get_txt_index('cats_dogs_dataset/valid/*.txt', 3)
-    txt_ymax_valid = get_txt_index('cats_dogs_dataset/valid/*.txt', 4)
 
     x_train = np.array(x_train)
     x_test = np.array(x_test)
@@ -106,30 +95,16 @@ def get_data(path_train_jpg, path_train_txt, path_valid_jpg, path_valid_txt):
     y_test_xmax = np.array(y_test_xmax)
     y_test_ymax = np.array(y_test_ymax)
 
-    x_valid = np.array(images_valid)
-    txt_class_valid = np.array(txt_class_valid)
-    txt_xmin_valid = np.array(txt_xmin_valid)
-    txt_ymin_valid = np.array(txt_ymin_valid)
-    txt_xmax_valid = np.array(txt_xmax_valid)
-    txt_ymax_valid = np.array(txt_ymax_valid)
-
     y_train_cat = {'class': y_train_class,
-                   'out': [y_train_xmin, y_train_ymin, y_train_xmax, y_train_ymax]}
+                   'xmin': y_train_xmin,
+                   'ymin': y_train_ymin,
+                   'xmax': y_train_xmax,
+                   'ymax': y_train_ymax}
 
     y_test_cat = {'class': y_test_class,
-                  'out': [y_test_xmin, y_test_ymin, y_test_xmax, y_test_ymax]}
+                   'xmin': y_test_xmin,
+                   'ymin': y_test_ymin,
+                   'xmax': y_test_xmax,
+                   'ymax': y_test_ymax}
 
-    y_valid_cat = {'class': txt_class_valid,
-                   'out': [txt_xmin_valid, txt_ymin_valid, txt_xmax_valid, txt_ymax_valid]}
-
-    return x_train, y_train_cat, x_test, y_test_cat, x_valid, y_valid_cat
-
-
-if __name__ == '__main__':
-    images_data = []
-
-    images = get_images('cats_dogs_dataset/train/*.jpg')
-    for img in images:
-        images_data.append(img)
-
-    print(len(images_data))
+    return x_train, y_train_cat, x_test, y_test_cat

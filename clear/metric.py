@@ -1,28 +1,32 @@
 import tensorflow as tf
+import tensorflow.keras.backend as K
 
 
-def interval_overlap(interval_1, interval_2):
-    x1, x2 = interval_1
-    x3, x4 = interval_2
+def custom_loss(y_true, y_pred):
+    mse = tf.losses.mean_squared_error(y_true, y_pred)
+    iou = mean_iou(y_true, y_pred)
 
-    if x3 < x1:
-        return 0 if x4 < x1 else (min(x2, x4) - x1)
-    else:
-        return 0 if x2 < x3 else (min(x2, x4) - x3)
+    custom_loss.__name__ = 'custom_loss'
+    return mse + (1 - iou)
 
 
-def intersection_over_union(box1, box2):
-    intersect_w = interval_overlap([box1.xmin, box1.xmax], [box2.xmin, box2.ymax])
-    intersect_h = interval_overlap([box1.ymin, box1.ymax], [box2.ymin, box2.ymax])
-    intersect_area = intersect_h * intersect_w
+def iou(y_true, y_pred, label: int):
+    y_true = K.cast(K.equal(K.argmax(y_true), label), K.floatx())
+    y_pred = K.cast(K.equal(K.argmax(y_pred), label), K.floatx())
 
-    w1, h1 = box1.xmax - box1.xmin, box1.ymax - box1.ymax
-    w2, h2 = box2.xmax - box2.xmin, box2.ymax - box2.ymax
+    intersection = K.sum(y_true * y_pred)
 
-    union_area = w1 * h1 + w2*h2 - intersect_area
+    union = K.sum(y_true) + K.sum(y_pred) - intersection
 
-    return float(intersect_area) / union_area
+    return K.switch(K.equal(union, 0), 1.0, intersection / union)
 
 
-def iou_metric(y_true, y_pred):
-    return intersection_over_union(y_true, y_pred)
+def mean_iou(y_true, y_pred):
+    num_labels = K.int_shape(y_pred)[-1]
+    total_iou = K.variable(0)
+
+    for label in range(num_labels):
+        total_iou = total_iou + iou(y_true, y_pred, label)
+
+    mean_iou.__name__ = 'mean_iou'
+    return total_iou / num_labels
