@@ -8,6 +8,9 @@ from clear.data import get_data
 from clear.metric import custom_loss, mean_iou
 from clear.model import create_model
 
+tf.config.run_functions_eagerly(True)
+
+
 if __name__ == '__main__':
     path_train_jpg = '../cats_dogs_dataset/train/*.jpg'
     path_train_txt = '../cats_dogs_dataset/train/*.txt'

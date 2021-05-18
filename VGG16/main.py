@@ -9,7 +9,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input, decode_predictions
 
-from punkt2.VGG16.data import get_data, get_txt_index, get_image_data
+from VGG16.data import get_data, get_txt_index, get_image_data
 
 if __name__ == '__main__':
     path_train_img = '../../cats_dogs_dataset/train/*.jpg'
