@@ -57,8 +57,14 @@ def get_txt_index(path, index):
 
             if tmp == 2 and index == 0:
                 tmp = 0
-            elif index != 0:
-                tmp = tmp / 220
+            elif index == 1 and index == 3:
+                img = Image.open(os.path.splitext(txt_file)[0] + '.jpg')
+                w, _ = img.size
+                tmp = tmp / w
+            elif index == 2 and index == 4:
+                img = Image.open(os.path.splitext(txt_file)[0] + '.jpg')
+                _, h = img.size
+                tmp = tmp / h
 
             txt_data.append(tmp)
 
